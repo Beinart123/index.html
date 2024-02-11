@@ -185,12 +185,12 @@
             const three = document.getElementById('three').value;
             const two = document.getElementById('two').value;
             const one = document.getElementById('one').value;
-            const beauty = parseInt(document.getElementById('beauty').value) || 0;
-            const body = parseInt(document.getElementById('body').value) || 0;
-            const style = parseInt(document.getElementById('style').value) || 0;
+            const beauty = parseInt(document.getElementById('beauty').value);
+            const body = parseInt(document.getElementById('body').value);
+            const style = parseInt(document.getElementById('style').value);
 
-            // Validate values between 1 and 10
-            if (beauty < 1 || beauty > 10 || body < 1 || body > 10 || style < 1 || style > 10) {
+            if (isNaN(beauty) || isNaN(body) || isNaN(style) ||
+                beauty < 1 || beauty > 10 || body < 1 || body > 10 || style < 1 || style > 10) {
                 alert("Only values between 1-10 are allowed.");
                 return;
             }

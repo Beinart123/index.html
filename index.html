@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -46,9 +47,9 @@
             color: #555; /* Medium grey label color */
         }
 
-        select, input {
+        select {
             padding: 12px;
-            border: 1px solid #ddd;
+            border: 1px solid #ddd; /* Light grey border */
             border-radius: 4px;
             width: 100%;
             box-sizing: border-box;
@@ -71,9 +72,9 @@
             transition: background-color 0.3s;
         }
 
-            .mode-toggle:hover {
-                background-color: #555; /* Slightly darker grey on hover */
-            }
+        .mode-toggle:hover {
+            background-color: #555; /* Slightly darker grey on hover */
+        }
 
         #result {
             font-size: 1.2em;
@@ -93,13 +94,8 @@
             transition: background-color 0.3s;
         }
 
-            .calculate-btn:hover {
-                background-color: #45a049;
-            }
-
-        .error-message {
-            color: #f00;
-            margin-top: 5px;
+        .calculate-btn:hover {
+            background-color: #45a049;
         }
 
         /* Dark mode styles */
@@ -108,22 +104,23 @@
             color: #fff;
         }
 
-            body.dark-mode header {
-                background-color: #333;
-            }
+        body.dark-mode header {
+            background-color: #333;
+            color: #fff; /* Adjusted text color */
+        }
 
-            body.dark-mode main {
-                background-color: #333; /* Dark grey background in dark mode */
-            }
+        body.dark-mode main {
+            background-color: #333; /* Dark grey background in dark mode */
+        }
 
-            body.dark-mode label,
-            body.dark-mode select,
-            body.dark-mode input {
-                background-color: #444; /* Darker grey background in dark mode */
-                color: #fff;
-            }
+        body.dark-mode label,
+        body.dark-mode select {
+            background-color: #444; /* Darker grey background in dark mode */
+            color: #fff;
+        }
     </style>
 </head>
+
 <body>
 
     <header>
@@ -138,6 +135,7 @@
         <p>This algorithm will help you rank people on a scale between 1 - 10 based on beauty, body, and style.</p>
 
         <form id="totalRankForm">
+            <!-- Updated dropdowns for the three categories -->
             <label for="three">Category for Right Value (3): </label>
             <select id="three" name="three" required>
                 <option value="beauty">Beauty</option>
@@ -160,16 +158,13 @@
             </select>
 
             <label for="beauty">Enter the value for beauty: </label>
-            <input type="number" id="beauty" name="beauty" required min="1" max="10">
-            <div class="error-message" id="beautyError"></div>
+            <input type="number" id="beauty" name="beauty" min="1" max="10" required>
 
             <label for="body">Enter the value for body: </label>
-            <input type="number" id="body" name="body" required min="1" max="10">
-            <div class="error-message" id="bodyError"></div>
+            <input type="number" id="body" name="body" min="1" max="10" required>
 
             <label for="style">Enter the value for style: </label>
-            <input type="number" id="style" name="style" required min="1" max="10">
-            <div class="error-message" id="styleError"></div>
+            <input type="number" id="style" name="style" min="1" max="10" required>
 
             <button type="button" onclick="calculateTotalRank()" class="calculate-btn">Calculate Total Rank</button>
         </form>
@@ -177,7 +172,8 @@
         <p id="result"></p>
     </main>
 
-    <script>function toggleDarkMode() {
+    <script>
+        function toggleDarkMode() {
             const body = document.body;
             body.classList.toggle('dark-mode');
             const modeToggle = document.getElementById('modeToggle');
@@ -185,38 +181,62 @@
             modeToggle.innerHTML = `<i class="fas ${iconClass}"></i>`;
         }
 
-        function validateInput(value, errorElementId) {
-            const errorElement = document.getElementById(errorElementId);
-            if (value < 1 || value > 10 || isNaN(value)) {
-                errorElement.textContent = "Only values between 1-10 are allowed";
-                return false;
-            } else {
-                errorElement.textContent = "";
-                return true;
-            }
-        }
-
         function calculateTotalRank() {
+            const three = document.getElementById('three').value;
+            const two = document.getElementById('two').value;
+            const one = document.getElementById('one').value;
             const beauty = parseInt(document.getElementById('beauty').value) || 0;
             const body = parseInt(document.getElementById('body').value) || 0;
             const style = parseInt(document.getElementById('style').value) || 0;
 
-            // Validate inputs
-            const beautyValid = validateInput(beauty, 'beautyError');
-            const bodyValid = validateInput(body, 'bodyError');
-            const styleValid = validateInput(style, 'styleError');
-
-            // If any input is invalid, don't proceed with the calculation
-            if (!beautyValid || !bodyValid || !styleValid) {
+            // Validate values between 1 and 10
+            if (beauty < 1 || beauty > 10 || body < 1 || body > 10 || style < 1 || style > 10) {
+                alert("Only values between 1-10 are allowed.");
                 return;
             }
 
             let total = 0;
 
-            // ... (rest of the calculation logic)
+            if (three === 'beauty') {
+                total += 3.0 * beauty;
+                if (two === 'body') {
+                    total += 2.0 * body;
+                    total += style;
+                }
+                if (two === 'style') {
+                    total += 2.0 * style;
+                    total += body;
+                }
+            }
+
+            if (three === 'body') {
+                total += 3.0 * body;
+                if (two === 'beauty') {
+                    total += 2.0 * beauty;
+                    total += style;
+                }
+                if (two === 'style') {
+                    total += 2.0 * style;
+                    total += beauty;
+                }
+            }
+
+            if (three === 'style') {
+                total += 3.0 * style;
+                if (two === 'beauty') {
+                    total += 2.0 * beauty;
+                    total += body;
+                }
+                if (two === 'body') {
+                    total += 2.0 * body;
+                    total += beauty;
+                }
+            }
 
             const totalRank = total / 6.0;
             document.getElementById('result').innerText = `Total Rank: ${totalRank.toFixed(2)}`;
-        }</script>
+        }
+    </script>
 </body>
+
 </html>
